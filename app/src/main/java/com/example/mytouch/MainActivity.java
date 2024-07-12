@@ -80,19 +80,19 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             // 横向滑动
             if (e1.getX() - e2.getX() > 10) {
                 action = "手指慢慢向左滑动←";
-                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) + " px；\nX轴方向距离：" + Math.abs(dx)/(endLongPressTime - startLongPressTime)*1000 + " px/s" + "；\nY轴方向速度：" + Math.abs(dy)/(endLongPressTime - startLongPressTime)*1000 + " px/s";
+                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) + " px；\nX轴方向距离：" + dx + "；\nY轴方向速度：" + dy;
             } else if (e2.getX() - e1.getX() > 10) {
                 action = "手指慢慢向右滑动→";
-                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2))  + " px；\nX轴方向距离：" + Math.abs(dx)/(endLongPressTime - startLongPressTime)*1000  + " px/s" + "；\nY轴方向速度：" +Math.abs(dy)/(endLongPressTime - startLongPressTime)*1000 + " px/s";
+                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2))  + " px；\nX轴方向距离：" + dx  + " px/s" + "；\nY轴方向速度：" + dy;
             }
         } else {
             // 纵向滑动
             if (e1.getY() - e2.getY() > 10) {
                 action = "手指慢慢向上滑动↑";
-                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) + " px；\nX轴方向距离：" + Math.abs(dx)/(endLongPressTime - startLongPressTime)*1000 + " px/s" + "；\nY轴方向速度：" + Math.abs(dy)/(endLongPressTime - startLongPressTime)*1000 + " px/s";
+                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) + " px；\nX轴方向距离：" + dx + " px/s" + "；\nY轴方向速度：" + dy;
             } else if (e2.getY() - e1.getY() > 10) {
                 action = "手指慢慢向下滑动↓";
-                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) + " px；\nX轴方向距离：" + Math.abs(dx)/(endLongPressTime - startLongPressTime)*1000 + " px/s" + "；\nY轴方向速度：" + Math.abs(dy)/(endLongPressTime - startLongPressTime)*1000 + " px/s";
+                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) + " px；\nX轴方向距离：" + dx + "；\nY轴方向速度：" + dy;
             }
         }
         actionTextView.setText(action);
