@@ -16,13 +16,20 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
+import java.util.Objects;
+import java.util.SplittableRandom;
+
 public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
     private TextView actionTextView;
+    private TextView actionStep;
     private GestureDetector gestureDetector;
     private GestureDrawView gestureDrawView;
     private long startLongPressTime;
     private long endLongPressTime;
+    private String mAction = "";
+    private int mStep = 0;
+    private String mLastAction = "";
 
 
     @SuppressLint("MissingInflatedId")
@@ -31,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         actionTextView = findViewById(R.id.tv_desc);
+        actionStep = findViewById(R.id.tv_step);
         gestureDetector = new GestureDetector(getApplicationContext(), this);
         gestureDrawView = findViewById(R.id.gestureDrawView);
     }
@@ -40,6 +48,11 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
                 Log.i("MyTouch", "onUp");
+                if (!Objects.equals(mLastAction, "onUp")) {
+                    mLastAction = "onUp";
+                    mStep ++;
+                    actionStep.append("步骤" + mStep + ": 手指抬起onUp\n");
+                }
                 String action = "单次长按时间：";
                 endLongPressTime = System.currentTimeMillis();
                 action = action + (endLongPressTime - startLongPressTime) + "ms";
@@ -54,83 +67,115 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     @Override
     public boolean onDown(MotionEvent motionEvent) {
-        Log.i("MyTouch", "onDown");
+        mStep = 0;
+        actionStep.setText("");
+        actionStep.append("操作步骤：\n");
+        if (!Objects.equals(mLastAction, "onDown")) {
+            mLastAction = "onDown";
+            mStep ++;
+            actionStep.append("步骤" + mStep + ": 手指按下onDown\n");
+        }
         actionTextView.setText("手指按下");
         startLongPressTime = System.currentTimeMillis();
+        Log.i("MyTouch", "onDown");
         return false;
     }
 
     @Override
     public void onShowPress(MotionEvent motionEvent) {
+        if (!Objects.equals(mLastAction, "onShowPress")) {
+            mLastAction = "onShowPress";
+            mStep ++;
+            actionStep.append("步骤" + mStep + ": 手指按下了，但还未抬起onShowPress\n");
+        }
         Log.i("MyTouch", "onShowPress");
-
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent motionEvent) {
+        if (!Objects.equals(mLastAction, "onSingleTapUp")) {
+            mLastAction = "onSingleTapUp";
+            mStep ++;
+            actionStep.append("步骤" + mStep + ": 单击onSingleTapUp\n");
+        }
         Log.i("MyTouch", "onSingleTapUp");
         return false;
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float dx, float dy) {
-        Log.i("MyTouch", "onScroll");
+        if (!Objects.equals(mLastAction, "onScroll")) {
+            mLastAction = "onScroll";
+            mStep ++;
+            actionStep.append("步骤" + mStep + ": 滑动onScroll\n");
+        }
         String action = "慢滑";
         if (Math.abs(e1.getX() - e2.getX()) >= Math.abs(e1.getY() - e2.getY())) {
             // 横向滑动
             if (e1.getX() - e2.getX() > 10) {
                 action = "手指慢慢向左滑动←";
-                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) + " px；\nX轴方向距离：" + dx + "；\nY轴方向速度：" + dy;
+                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) + " px；\nX轴方向距离：" + dx + " px" +"；\nY轴方向距离：" + dy+ " px";
             } else if (e2.getX() - e1.getX() > 10) {
                 action = "手指慢慢向右滑动→";
-                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2))  + " px；\nX轴方向距离：" + dx  + " px/s" + "；\nY轴方向速度：" + dy;
+                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2))  + " px；\nX轴方向距离：" + dx  + " px" + "；\nY轴方向距离：" + dy+ " px";
             }
         } else {
             // 纵向滑动
             if (e1.getY() - e2.getY() > 10) {
                 action = "手指慢慢向上滑动↑";
-                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) + " px；\nX轴方向距离：" + dx + " px/s" + "；\nY轴方向速度：" + dy;
+                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) + " px；\nX轴方向距离：" + dx + " px" + "；\nY轴方向距离：" + dy+ " px";
             } else if (e2.getY() - e1.getY() > 10) {
                 action = "手指慢慢向下滑动↓";
-                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) + " px；\nX轴方向距离：" + dx + "；\nY轴方向速度：" + dy;
+                action = action + "；\n距离：" + Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2)) + " px；\nX轴方向距离：" + dx + " px"+ "；\nY轴方向距离：" + dy+ " px";
             }
         }
         actionTextView.setText(action);
+        Log.i("MyTouch", "onScroll");
         return false;
     }
 
     @Override
     public void onLongPress(MotionEvent motionEvent) {
-        Log.i("MyTouch", "onLongPress");
+        if(!Objects.equals(mLastAction, "onLongPress")) {
+            mLastAction = "onLongPress";
+            mStep ++;
+            actionStep.append("步骤" + mStep + ": 长按onLongPress\n");
+        }
         actionTextView.setText("长按事件");
+        Log.i("MyTouch", "onLongPress");
     }
 
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        Log.i("MyTouch", "onFling");
+        if (!Objects.equals(mLastAction, "onFling")) {
+            mLastAction = "onFling";
+            mStep ++;
+            actionStep.append("步骤" + mStep + ": 离手快速滑动行为onFling\n");
+        }
         String action = "滑动行为";
         // 快速滑动事件，可以在这里判断大概的滑动方向
         if (Math.abs(e1.getX() - e2.getX()) >= Math.abs(e1.getY() - e2.getY())) {
             // 横向滑动
             if (e1.getX() - e2.getX() > 10) {
                 action = "手指快速向左滑动←";
-                action = action + "；\n距离：" + Math.sqrt(Math.pow(Math.abs(e1.getX()-e2.getX()),2) + Math.pow(Math.abs(e1.getY()-e2.getY()),2)) + " px；\nX轴方向速度：" + Math.abs(velocityX) + " px/s" + "；\nY轴方向速度：" + Math.abs(velocityY) + " px/s";
+                action = action + "；\n距离：" + Math.sqrt(Math.pow(Math.abs(e1.getX()-e2.getX()),2) + Math.pow(Math.abs(e1.getY()-e2.getY()),2)) + " px；\nX轴方向离手速度：" + Math.abs(velocityX) + " px/s" + "；\nY轴方向离手速度：" + Math.abs(velocityY) + " px/s";
             } else if (e2.getX() - e1.getX() > 10) {
                 action = "手指快速向右滑动→";
-                action = action + "；\n距离：" + Math.sqrt(Math.pow(Math.abs(e1.getX()-e2.getX()),2) + Math.pow(Math.abs(e1.getY()-e2.getY()),2)) + " px；\nX轴方向速度：" + Math.abs(velocityX) + " px/s" + "；\nY轴方向速度：" + Math.abs(velocityY) + " px/s";
+                action = action + "；\n距离：" + Math.sqrt(Math.pow(Math.abs(e1.getX()-e2.getX()),2) + Math.pow(Math.abs(e1.getY()-e2.getY()),2)) + " px；\nX轴方向离手速度：" + Math.abs(velocityX) + " px/s" + "；\nY轴方向离手速度：" + Math.abs(velocityY) + " px/s";
             }
         } else {
             // 纵向滑动
             if (e1.getY() - e2.getY() > 10) {
                 action = "手指快速向上滑动↑";
-                action = action + "；\n距离：" + Math.sqrt(Math.pow(Math.abs(e1.getX()-e2.getX()),2) + Math.pow(Math.abs(e1.getY()-e2.getY()),2)) + " px；\nX轴方向速度：" + Math.abs(velocityX) + " px/s" + "；\nY轴方向速度：" + Math.abs(velocityY) + " px/s";
+                action = action + "；\n距离：" + Math.sqrt(Math.pow(Math.abs(e1.getX()-e2.getX()),2) + Math.pow(Math.abs(e1.getY()-e2.getY()),2)) + " px；\nX轴方向离手速度：" + Math.abs(velocityX) + " px/s" + "；\nY轴方向离手速度：" + Math.abs(velocityY) + " px/s";
             } else if (e2.getY() - e1.getY() > 10) {
                 action = "手指快速向下滑动↓";
-                action = action + "；\n距离：" + Math.sqrt(Math.pow(Math.abs(e1.getX()-e2.getX()),2) + Math.pow(Math.abs(e1.getY()-e2.getY()),2)) + " px；\nX轴方向速度：" + Math.abs(velocityX) + " px/s" + "；\nY轴方向速度：" + Math.abs(velocityY) + " px/s";
+                action = action + "；\n距离：" + Math.sqrt(Math.pow(Math.abs(e1.getX()-e2.getX()),2) + Math.pow(Math.abs(e1.getY()-e2.getY()),2)) + " px；\nX轴方向离手速度：" + Math.abs(velocityX) + " px/s" + "；\nY轴方向离手速度：" + Math.abs(velocityY) + " px/s";
             }
         }
         actionTextView.setText(action);
+        Log.i("MyTouch", "onFling");
         return true;
     }
 }
