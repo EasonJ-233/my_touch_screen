@@ -1,15 +1,14 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
 }
 
 android {
     namespace 'com.example.test'
-    compileSdk 34
+    compileSdk 28
 
     defaultConfig {
-        applicationId "com.example.test"
         minSdk 28
-        targetSdk 34
+        targetSdk 28
         versionCode 1
         versionName "1.0"
 
@@ -26,7 +25,29 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    android.libraryVariants.all{ variant ->
+        variant.outputs.all{
+            def createTime = new Date().format("YYYYMMddhhmm", TimeZone.getTimeZone("GMT+08:00"))
+            def fileName = "${project.name}_${buildType.name}_v${defaultConfig.versionName}_${createTime}.aar"
+            outputFileName = fileName
+        }
+    }
+
+    //生成jar包
+//task makeJar(type: Copy) {
+//        delete 'build/outputs/mytest.jar'
+//        //build/intermediates/packaged-classes/release/是classes.jar的路径jar文件来源
+//        //如果没有找到可能在 build/intermediates/aar_main_jar/release/ 路径下
+//        from('build/intermediates/compile_app_classes_jar/debug/')
+//        into('build/libs/') //生成路径
+//        include('classes.jar')
+//        rename('classes.jar', 'mytest.jar')//mytest.jar  生成jar包的名称
+//    }
+//    makeJar.dependsOn(build)
+
 }
+
 
 dependencies {
 

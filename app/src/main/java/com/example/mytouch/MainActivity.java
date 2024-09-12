@@ -16,6 +16,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
+import com.example.test.Utils;
+
 import java.util.Objects;
 import java.util.SplittableRandom;
 
@@ -142,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             actionStep.append("步骤" + mStep + ": 长按onLongPress\n");
         }
         actionTextView.setText("长按事件");
+//        Utils.addMethod(1,2);
         Log.i("MyTouch", "onLongPress");
     }
 

@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.mytouch"
-        minSdk 21
+        minSdk 28
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -26,10 +26,24 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    android.applicationVariants.all{ variant ->
+        variant.outputs.all{
+            def createTime = new Date().format("YYYYMMddhhmm", TimeZone.getTimeZone("GMT+08:00"))
+            def fileName = "${project.name}_${buildType.name}_v${defaultConfig.versionName}_${createTime}.apk"
+            outputFileName = fileName
+        }
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
 }
 
 dependencies {
-
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     testImplementation 'junit:junit:4.13.2'
